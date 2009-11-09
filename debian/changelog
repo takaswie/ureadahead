@@ -1,0 +1,64 @@
+ureadahead (0.90.3-2) karmic-proposed; urgency=low
+
+  * über-readahead is a replacement for sreadahead that should
+    significantly improve boot performance on rotational hard drives,
+    especially those that had regressed in performance from jaunty to
+    karmic.
+
+    It does this by pre-loading such things as ext2/3/4 inodes and opening
+    files in as logical order as possible before loading all blocks in one
+    pass across the disk.
+
+    On SSD, this behaves much as sreadahead used to, replacing that package
+    with slightly improved tracing code.
+
+    This requires the kernel package also found in karmic-proposed.
+
+    LP: #432089.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon, 09 Nov 2009 18:38:51 +0000
+
+ureadahead (0.90.3-1) karmic; urgency=low
+
+  * New upstream release:
+    - Move ext2fs inode group lookup into the tracing stage, storing the
+      groups to preload in the pack, rather than spending time on normal
+      boots working it out.
+    - Open files in order of inode group (or inode number on non-ext2fs),
+      which seems to give a benefit in load time and certainly produces
+      better blktrace output.
+    - Increase the "too old" check from a month to a year.
+    - Fix dump of zero-byte files to not claim a single page.
+    - Fix unhandled error output when given an unknown pack file.
+    - Don't call ureadhead for the root filesystem twice on boot (the second
+      time should only take a few ms, but that's still time)
+    - Consider exit status 4 (no pack file for given mount point) normal.
+    - Make uselib tracing optional.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 05 Nov 2009 15:10:06 +0000
+
+ureadahead (0.90.2-1) karmic; urgency=low
+
+  * New upstream release:
+    - improved SSD mode
+    - inode group preload threshold configurable by environment variable
+    - default inode group preload threshold changed to 16, because random
+      stabbing in the dark suggested it was a good number
+    - add a job that profiles extra mountpoints
+
+  * Remove /etc/cron.monthly/sreadahead too.
+  * Add an apport hook to attach a dump of the packs.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 29 Oct 2009 18:14:51 +0000
+
+ureadahead (0.90.1-1) karmic; urgency=low
+
+  * Bug fixes.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 29 Oct 2009 02:13:38 +0000
+
+ureadahead (0.90.0-1) karmic; urgency=low
+
+  * Initial release to ubuntu-boot PPA.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Thu, 29 Oct 2009 01:01:42 +0000

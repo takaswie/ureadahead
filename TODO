@@ -1,0 +1,6 @@
+TODO:
+
+ * Make sure we haven't regressed from sreadahead for SDD performance.
+
+ * Continue to investigate how to improve performance of the open() pass
+   on hard-drives.

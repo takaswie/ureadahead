@@ -1,0 +1,32 @@
+Source: ureadahead
+Section: admin
+Priority: required
+Maintainer: Scott James Remnant <scott@ubuntu.com>
+Standards-Version: 3.8.0.0
+Build-Depends: debhelper (>= 7.3.15ubuntu3), pkg-config (>= 0.22), libblkid-dev (>= 2.16), e2fslibs-dev (>= 1.41)
+Vcs-Bzr: lp:~ubuntu-core-dev/ubuntu/karmic/ureadahead/ubuntu
+Vcs-Browser: http://bazaar.launchpad.net/~ubuntu-core-dev/ubuntu/karmic/ureadahead/ubuntu
+
+Package: ureadahead
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, upstart (>= 0.6.0)
+Conflicts: readahead
+Provides: readahead
+Replaces: readahead
+Description: Read required files in advance
+ über-readahead is used during boot to read files in advance of when
+ they are needed such that they are already in the page cache,
+ improving boot performance.
+ .
+ Its data files are regenerated on the first boot after install, and
+ either monthly thereafter or when packages with init scripts or
+ configs are installed or updated.
+ .
+ ureadahead requires a kernel patch included in the Ubuntu kernel.
+
+Package: sreadahead
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ureadahead
+Description: Transitional package for ureadahead
+ sreadahead has been replaced by ureadahead, this package ensures
+ that you are transitioned over and may be safely removed.
