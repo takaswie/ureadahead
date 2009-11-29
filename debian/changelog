@@ -1,3 +1,13 @@
+ureadahead (0.100.0-1) lucid; urgency=low
+
+  * New upstream release:
+    - Use external libnih
+
+  * debian/control: Add build-dependency on libnih-dev
+  * debian/rules: Fix installation of apport hook.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Sun, 29 Nov 2009 15:24:15 +0000
+
 ureadahead (0.90.3-2) karmic-proposed; urgency=low
 
   * über-readahead is a replacement for sreadahead that should

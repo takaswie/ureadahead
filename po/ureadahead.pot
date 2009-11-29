@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: ureadahead 0.100.0\n"
 "Report-Msgid-Bugs-To: ubuntu-devel@lists.ubuntu.com\n"
-"POT-Creation-Date: 2009-11-05 14:59+0000\n"
+"POT-Creation-Date: 2009-11-29 15:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,212 +16,110 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: nih/command.c:61
-msgid "display list of commands"
-msgstr ""
-
-#: nih/command.c:139
-#, c-format
-msgid "For a list of commands, try `%s help'."
-msgstr ""
-
-#: nih/command.c:143
-msgid "COMMAND [OPTION]... [ARG]..."
-msgstr ""
-
-#: nih/command.c:158
-#, c-format
-msgid "%s: missing command\n"
-msgstr ""
-
-#: nih/command.c:166
-#, c-format
-msgid "%s: invalid command: %s\n"
-msgstr ""
-
-#: nih/command.c:177
-#, c-format
-msgid "%s [OPTION]..."
-msgstr ""
-
-#: nih/command.c:403
-#, c-format
-msgid "For more information on a command, try `%s COMMAND --help'.\n"
-msgstr ""
-
-#: nih/command.c:426
-#, c-format
-msgid "%s commands:\n"
-msgstr ""
-
-#: nih/command.c:428
-#, c-format
-msgid "Other commands:\n"
-msgstr ""
-
-#: nih/command.c:430
-#, c-format
-msgid "Commands:\n"
-msgstr ""
-
-#: nih/io.c:1199
-msgid "Error while reading from descriptor"
-msgstr ""
-
-#: nih/main.c:233
-#, c-format
-msgid "Try `%s --help' for more information.\n"
-msgstr ""
-
-#: nih/main.c:255
-msgid ""
-"This is free software; see the source for copying conditions.  There is NO "
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-msgstr ""
-
-#: nih/main.c:318
-msgid "Unable to write pid file"
-msgstr ""
-
-#: nih/option.c:95
-msgid "reduce output to errors only"
-msgstr ""
-
-#: nih/option.c:98
-msgid "increase output to include informational messages"
-msgstr ""
-
-#: nih/option.c:102
-msgid "display this help and exit"
-msgstr ""
-
-#: nih/option.c:105
-msgid "output version information and exit"
-msgstr ""
-
-#: nih/option.c:299
-#, c-format
-msgid "%s: invalid option: -%c\n"
-msgstr ""
-
-#: nih/option.c:392
-#, c-format
-msgid "%s: invalid option: --%s\n"
-msgstr ""
-
-#: nih/option.c:408
-#, c-format
-msgid "%s: unexpected argument: --%s\n"
-msgstr ""
-
-#: nih/option.c:464
-#, c-format
-msgid "%s: missing argument: %s\n"
-msgstr ""
-
-#: nih/option.c:664
+#: src/ureadahead.c:111
 #, c-format
 msgid "%s: illegal argument: %s\n"
 msgstr ""
 
-#: nih/option.c:857
-msgid "Usage"
+#: src/ureadahead.c:127
+msgid "detach and run in the background"
 msgstr ""
 
-#: nih/option.c:861
-msgid "[OPTION]..."
+#: src/ureadahead.c:129
+msgid "ignore existing pack and force retracing"
 msgstr ""
 
-#: nih/option.c:909
-#, c-format
-msgid "Report bugs to <%s>\n"
+#: src/ureadahead.c:131
+msgid "maximum time to trace [default: until terminated]"
 msgstr ""
 
-#: nih/option.c:911
-#, c-format
-msgid "Report bugs at <%s>\n"
+#: src/ureadahead.c:133
+msgid "dump the current pack file"
 msgstr ""
 
-#: nih/option.c:936
-#, c-format
-msgid "%s options:\n"
+#: src/ureadahead.c:135
+msgid "how to sort the pack file when dumping [default: path]"
 msgstr ""
 
-#: nih/option.c:938
-#, c-format
-msgid "Other options:\n"
+#: src/ureadahead.c:152
+msgid "[PATH]"
 msgstr ""
 
-#: nih/option.c:940
-#, c-format
-msgid "Options:\n"
+#: src/ureadahead.c:153
+msgid "Read required files in advance"
 msgstr ""
 
-#: nih/watch.c:550
-msgid "Unable to watch directory"
+#: src/ureadahead.c:155
+msgid ""
+"PATH should be the location of a mounted filesystem for which files should "
+"be read.  If not given, the root filesystem is assumed.\n"
+"\n"
+"If PATH is not given, and no readahead information exists for the root "
+"filesystem (or it is old), tracing is performed instead to generate the "
+"information for the next boot."
 msgstr ""
 
-#: nih/errors.h:56
-msgid "Expected token"
+#: src/ureadahead.c:180
+msgid "Unable to determine pack file name"
 msgstr ""
 
-#: nih/errors.h:57
-msgid "Unexpected token"
+#: src/ureadahead.c:198
+msgid "Error while reading"
 msgstr ""
 
-#: nih/errors.h:58
-msgid "Trailing slash in file"
+#: src/ureadahead.c:227
+msgid "Error while tracing"
 msgstr ""
 
-#: nih/errors.h:59
-msgid "Unterminated quoted string"
-msgstr ""
-
-#: nih/errors.h:60
-msgid "Unterminated block"
-msgstr ""
-
-#: nih/errors.h:61
-msgid "Unknown stanza"
-msgstr ""
-
-#: nih/errors.h:63
-msgid "Directory loop detected"
-msgstr ""
-
-#: src/trace.c:424
+#: src/trace.c:425
 msgid "Ignored relative path"
 msgstr ""
 
-#: src/trace.c:439
+#: src/trace.c:440
 msgid "Ignored far too long path"
 msgstr ""
 
-#: src/trace.c:475
+#: src/trace.c:476
 msgid "File vanished or error reading"
 msgstr ""
 
-#: src/trace.c:482
+#: src/trace.c:483
 msgid "Error retrieving file stat"
 msgstr ""
 
-#: src/trace.c:614
+#: src/trace.c:615
 #, c-format
 msgid "Unable to obtain rotationalness for device %u:%u: %s"
 msgstr ""
 
-#: src/trace.c:665
+#: src/trace.c:666
 msgid "Error mapping into memory"
 msgstr ""
 
-#: src/trace.c:677
+#: src/trace.c:678
 msgid "Error retrieving page cache info"
 msgstr ""
 
-#: src/trace.c:686
+#: src/trace.c:687
 msgid "Error unmapping from memory"
 msgstr ""
 
-#: src/trace.c:814
+#: src/trace.c:815
 msgid "Error retrieving chunk extents"
+msgstr ""
+
+#: src/pack.c:701
+msgid "Failed to set CPU priority"
+msgstr ""
+
+#: src/pack.c:706 src/pack.c:813
+msgid "Failed to set I/O priority"
+msgstr ""
+
+#: src/errors.h:35
+msgid "Pack data error"
+msgstr ""
+
+#: src/errors.h:36
+msgid "Pack too old"
 msgstr ""

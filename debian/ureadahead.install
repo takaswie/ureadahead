@@ -1,0 +1,3 @@
+etc/init
+usr/sbin/ureadahead
+usr/share/man/man8/ureadahead.8

@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = po m4 intl nih src po
+SUBDIRS = po intl src
 
-EXTRA_DIST = config.rpath ChangeLog.nih
+EXTRA_DIST = config.rpath
 
 ACLOCAL_AMFLAGS = --install -I m4
 

@@ -219,7 +219,8 @@ trace (int daemonise,
 		goto error;
 
 	/* Be nicer */
-	nice (15);
+	if (nice (15))
+		;
 
 	/* Read trace log */
 	if (read_trace (NULL, dfd, "trace", &files, &num_files) < 0)
