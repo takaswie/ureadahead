@@ -1,3 +1,10 @@
+ureadahead (0.100.0-2) lucid; urgency=low
+
+  * Put an all-important "--" in the dh_auto_configure invocation so that
+    ureadahead is installed into the right path (/sbin)
+
+ -- Scott James Remnant <scott@ubuntu.com>  Tue, 01 Dec 2009 02:25:50 +0000
+
 ureadahead (0.100.0-1) lucid; urgency=low
 
   * New upstream release:

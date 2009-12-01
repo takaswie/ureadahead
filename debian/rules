@@ -16,7 +16,7 @@ else
 endif
 
 override_dh_auto_configure:
-	dh_auto_configure CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	dh_auto_configure -- CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 		--exec-prefix=
 
 
