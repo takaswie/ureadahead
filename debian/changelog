@@ -1,3 +1,10 @@
+ureadahead (0.100.0-3) lucid; urgency=low
+
+  * conf/ureadahead-other.conf: Change from "on mount" to "on mounted",
+    the former didn't work anyway. 
+
+ -- Scott James Remnant <scott@ubuntu.com>  Mon, 21 Dec 2009 23:20:02 +0000
+
 ureadahead (0.100.0-2) lucid; urgency=low
 
   * Put an all-important "--" in the dh_auto_configure invocation so that
