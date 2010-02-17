@@ -1,3 +1,10 @@
+ureadahead (0.100.0-4) lucid; urgency=low
+
+  * debian/control: drop sreadahead migration package; dist-upgrade users
+    will have ureadahead installed by the standard meta-packages. 
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 17 Feb 2010 12:14:09 +0000
+
 ureadahead (0.100.0-3) lucid; urgency=low
 
   * conf/ureadahead-other.conf: Change from "on mount" to "on mounted",

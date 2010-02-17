@@ -21,10 +21,3 @@ Description: Read required files in advance
  configs are installed or updated.
  .
  ureadahead requires a kernel patch included in the Ubuntu kernel.
-
-Package: sreadahead
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ureadahead
-Description: Transitional package for ureadahead
- sreadahead has been replaced by ureadahead, this package ensures
- that you are transitioned over and may be safely removed.
