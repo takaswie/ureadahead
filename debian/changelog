@@ -1,3 +1,11 @@
+ureadahead (0.100.0-4.1) lucid; urgency=low
+
+  * Revert previous upload; had forgotten that the sreadahead package
+    contains all the clean-up stuff so we want to keep it for the
+    release upgrade after all.
+
+ -- Scott James Remnant <scott@ubuntu.com>  Wed, 17 Feb 2010 12:57:00 +0000
+
 ureadahead (0.100.0-4) lucid; urgency=low
 
   * debian/control: drop sreadahead migration package; dist-upgrade users
