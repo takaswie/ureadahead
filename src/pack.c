@@ -163,6 +163,7 @@ pack_file_name_for_device (const void *parent,
 		unsigned int maj;
 		unsigned int min;
 		char *       mount;
+		struct stat  statbuf;
 
 		/* mount ID */
 		ptr = strtok_r (line, " \t\n", &saveptr);
@@ -185,14 +186,6 @@ pack_file_name_for_device (const void *parent,
 			continue;
 		}
 
-		/* Check whether this is the right device */
-		if ((sscanf (device, "%d:%d", &maj, &min) < 2)
-		    || (maj != major (dev))
-		    || (min != minor (dev))) {
-			nih_free (line);
-			continue;
-		}
-
 		/* root */
 		ptr = strtok_r (NULL, " \t\n", &saveptr);
 		if (! ptr) {
@@ -203,6 +196,12 @@ pack_file_name_for_device (const void *parent,
 		/* mount point */
 		mount = strtok_r (NULL, " \t\n", &saveptr);
 		if (! mount) {
+			nih_free (line);
+			continue;
+		}
+
+		/* Check whether this is the right device */
+		if (stat (mount, &statbuf) || statbuf.st_dev != dev) {
 			nih_free (line);
 			continue;
 		}

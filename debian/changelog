@@ -1,3 +1,11 @@
+ureadahead (0.100.0-5) maverick; urgency=low
+
+  * src/pack.c: Amend mount point detection logic to stat the mount point
+    instead of just comparing major/minor versions with /proc/self/mountinfo
+    (LP: #570014).
+
+ -- Chow Loong Jin <hyperair@ubuntu.com>  Fri, 25 Jun 2010 13:14:54 +0100
+
 ureadahead (0.100.0-4.1) lucid; urgency=low
 
   * Revert previous upload; had forgotten that the sreadahead package
