@@ -1,3 +1,12 @@
+ureadahead (0.100.0-6) maverick; urgency=low
+
+  * Restore buffer_size_kb upon exit, but do it _after_
+    the trace buffer has been read. This frees the memory
+    consumed by the trace operation (which can be a lot).
+    -LP: #501715
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Thu, 22 Jul 2010 04:04:36 -0600
+
 ureadahead (0.100.0-5) maverick; urgency=low
 
   * src/pack.c: Amend mount point detection logic to stat the mount point

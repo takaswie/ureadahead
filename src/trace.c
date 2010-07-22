@@ -122,6 +122,7 @@ trace (int daemonise,
 	int                 old_open_exec_enabled = 0;
 	int                 old_uselib_enabled = 0;
 	int                 old_tracing_enabled = 0;
+	int                 old_buffer_size_kb = 0;
 	struct sigaction    act;
 	struct sigaction    old_sigterm;
 	struct sigaction    old_sigint;
@@ -165,7 +166,7 @@ trace (int daemonise,
 
 		old_uselib_enabled = -1;
 	}
-	if (set_value (dfd, "buffer_size_kb", 128000, NULL) < 0)
+	if (set_value (dfd, "buffer_size_kb", 128000, &old_buffer_size_kb) < 0)
 		goto error;
 	if (set_value (dfd, "tracing_enabled",
 		       TRUE, &old_tracing_enabled) < 0)
@@ -224,6 +225,13 @@ trace (int daemonise,
 
 	/* Read trace log */
 	if (read_trace (NULL, dfd, "trace", &files, &num_files) < 0)
+		goto error;
+
+	/*
+	 * Restore the trace buffer size (which has just been read) and free
+	 * a bunch of memory.
+	 */
+	if (set_value (dfd, "buffer_size_kb", old_buffer_size_kb, NULL) < 0)
 		goto error;
 
 	/* Unmount the temporary debugfs mount if we mounted it */
