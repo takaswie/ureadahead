@@ -1,3 +1,15 @@
+ureadahead (0.100.0-7) maverick; urgency=low
+
+  * Count the number of CPUs and divide buffer_size_kb by the number of CPUs.
+    Users should watch for instances of "mmiotrace has lost events" in dmesg to make
+    sure the trace buffers are not too small. The original value for
+    buffer_size_kb was chosen somewhat arbitrarily. Empirical testing
+    has shown that its large enough, so we don't actually know where the lower
+    boundary lies.
+    -LP: #491943
+
+ -- Tim Gardner <tim.gardner@canonical.com>  Fri, 20 Aug 2010 12:19:31 -0600
+
 ureadahead (0.100.0-6) maverick; urgency=low
 
   * Restore buffer_size_kb upon exit, but do it _after_
