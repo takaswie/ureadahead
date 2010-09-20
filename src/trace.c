@@ -173,7 +173,7 @@ trace (int daemonise,
 	if (!num_cpus)
 		num_cpus = 1;
 
-    /* Enable tracing of open() syscalls */
+	/* Enable tracing of open() syscalls */
 	if (set_value (dfd, "events/fs/do_sys_open/enable",
 		       TRUE, &old_sys_open_enabled) < 0)
 		goto error;
@@ -190,7 +190,7 @@ trace (int daemonise,
 
 		old_uselib_enabled = -1;
 	}
-	if (set_value (dfd, "buffer_size_kb", 128000/num_cpus, &old_buffer_size_kb) < 0)
+	if (set_value (dfd, "buffer_size_kb", 8192/num_cpus, &old_buffer_size_kb) < 0)
 		goto error;
 	if (set_value (dfd, "tracing_enabled",
 		       TRUE, &old_tracing_enabled) < 0)
