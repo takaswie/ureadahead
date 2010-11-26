@@ -22,12 +22,9 @@ override_dh_auto_configure:
 
 override_dh_install:
 	dh_install
-	install debian/ureadahead.apport \
+	install -m 644 debian/ureadahead.apport \
 		debian/ureadahead/usr/share/apport/package-hooks/ureadahead.py
 
 
 version := $(shell sed -e '1{;s|^ureadahead (\(.*\))\ .*|\1|;q;}' debian/changelog)
 
-override_dh_gencontrol:
-	dh_gencontrol -psreadahead -u-v1:$(version)
-	dh_gencontrol -Nsreadahead

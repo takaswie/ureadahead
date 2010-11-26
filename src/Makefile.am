@@ -22,6 +22,7 @@ ureadahead_SOURCES = \
 	file.c file.h \
 	errors.h
 ureadahead_LDADD = \
+	-lrt \
 	$(NIH_LIBS) \
 	$(BLKID_LIBS) \
 	$(EXT2FS_LIBS) \

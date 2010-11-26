@@ -1,3 +1,21 @@
+ureadahead (0.100.0-9) natty; urgency=low
+
+  [ Bilal Akhtar ]
+  * Removed sreadahead transitional package and its postinst, postrm,
+    preinst and install files. (LP: #545596)
+  * Passed --sourcedir argument to dh_install
+  * Removed dh_gencontrol calls for package sreadahead.
+
+  [ Martin Pitt ]
+  * src/Makefile.{am,in}: Add missing -lrt, as pack.c uses clock_gettime.
+    Fixes building with gcc 4.5.
+  * debian/rules: Revert --sourcedir passing, it's not necessary.
+  * debian/rules: Don't install apport hook as executable.
+  * debian/copyright: Point to versioned GPL-2 file.
+  * debian/control: Bump Standards-Version to 3.9.1.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Fri, 26 Nov 2010 12:29:40 +0100
+
 ureadahead (0.100.0-8) maverick; urgency=low
 
   * Decrease the buffer size to just 8MB, after much testing we don't
