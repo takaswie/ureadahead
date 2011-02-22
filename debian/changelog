@@ -1,3 +1,10 @@
+ureadahead (0.100.0-10) natty; urgency=low
+
+  * Install /var/lib/ureadahead mode 0700 so other users cannot see
+    the debugfs mount point.
+
+ -- Kees Cook <kees@ubuntu.com>  Tue, 22 Feb 2011 12:13:22 -0800
+
 ureadahead (0.100.0-9) natty; urgency=low
 
   [ Bilal Akhtar ]

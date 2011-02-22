@@ -24,6 +24,10 @@ override_dh_install:
 	dh_install
 	install -m 644 debian/ureadahead.apport \
 		debian/ureadahead/usr/share/apport/package-hooks/ureadahead.py
+	install -m 700 -d debian/ureadahead/var/lib/ureadahead
+
+override_dh_fixperms:
+	dh_fixperms -X/var/lib/ureadahead
 
 
 version := $(shell sed -e '1{;s|^ureadahead (\(.*\))\ .*|\1|;q;}' debian/changelog)
