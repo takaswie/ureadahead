@@ -1,3 +1,11 @@
+ureadahead (0.100.0-11) natty; urgency=low
+
+  * src/trace.c: leave room for string termination on reads (LP: #485194).
+  * man/ureadahead.8: fix typo and update bug reporting URL (LP: #697770).
+  * debian/rules: don't bother with /var/lib/ureadahead mode.
+
+ -- Kees Cook <kees@ubuntu.com>  Wed, 16 Mar 2011 17:19:01 -0700
+
 ureadahead (0.100.0-10) natty; urgency=low
 
   * Install /var/lib/ureadahead mode 0700 so other users cannot see

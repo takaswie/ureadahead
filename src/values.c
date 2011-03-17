@@ -57,7 +57,7 @@ get_value (int         dfd,
 	if (fd < 0)
 		nih_return_system_error (-1);
 
-	len = read (fd, buf, sizeof buf);
+	len = read (fd, buf, sizeof(buf) - 1);
 	if (len < 0) {
 		nih_error_raise_system ();
 		close (fd);
@@ -90,7 +90,7 @@ set_value (int         dfd,
 		nih_return_system_error (-1);
 
 	if (oldvalue) {
-		len = read (fd, buf, sizeof buf);
+		len = read (fd, buf, sizeof(buf) - 1);
 		if (len < 0) {
 			nih_error_raise_system ();
 			close (fd);
