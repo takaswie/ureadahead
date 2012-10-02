@@ -1,3 +1,9 @@
+ureadahead (0.100.0-12build1) quantal; urgency=low
+
+  * Rebuild for new armel compiler default of ARMv5t.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 02 Oct 2012 16:50:25 +0100
+
 ureadahead (0.100.0-12) precise; urgency=low
 
   * src/trace.c: add /run to the set of paths to ignore.
