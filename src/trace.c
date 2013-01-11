@@ -192,7 +192,7 @@ trace (int daemonise,
 	}
 	if (set_value (dfd, "buffer_size_kb", 8192/num_cpus, &old_buffer_size_kb) < 0)
 		goto error;
-	if (set_value (dfd, "tracing_enabled",
+	if (set_value (dfd, "tracing_on",
 		       TRUE, &old_tracing_enabled) < 0)
 		goto error;
 
@@ -229,7 +229,7 @@ trace (int daemonise,
 	sigaction (SIGINT, &old_sigint, NULL);
 
 	/* Restore previous tracing settings */
-	if (set_value (dfd, "tracing_enabled",
+	if (set_value (dfd, "tracing_on",
 		       old_tracing_enabled, NULL) < 0)
 		goto error;
 	if (old_uselib_enabled >= 0)

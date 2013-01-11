@@ -1,3 +1,10 @@
+ureadahead (0.100.0-13) raring; urgency=low
+
+  * src/trace.c: tracing_enabled is deprecated and gone, switch to tracing_on
+    (LP: #1085766).
+
+ -- Andy Whitcroft <apw@ubuntu.com>  Fri, 11 Jan 2013 12:05:17 +0000
+
 ureadahead (0.100.0-12build1) quantal; urgency=low
 
   * Rebuild for new armel compiler default of ARMv5t.
