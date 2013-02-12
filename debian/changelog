@@ -1,3 +1,10 @@
+ureadahead (0.100.0-14) raring; urgency=low
+
+  * Use dh-autoreconf to ensure (among other things) that config.guess and
+    config.sub are up to date.
+
+ -- Colin Watson <cjwatson@ubuntu.com>  Tue, 12 Feb 2013 02:32:39 +0000
+
 ureadahead (0.100.0-13) raring; urgency=low
 
   * src/trace.c: tracing_enabled is deprecated and gone, switch to tracing_on

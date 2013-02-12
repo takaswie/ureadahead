@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 %:
-	dh $@
+	dh $@ --with autoreconf
 
 
 CFLAGS = -Wall -g -fstack-protector -fPIE
