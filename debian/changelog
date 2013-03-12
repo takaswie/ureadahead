@@ -1,3 +1,12 @@
+ureadahead (0.100.0-15) raring; urgency=low
+
+  * src/ureadahead.c: correct help text for --sort command line argument
+    (LP: #1131404)
+  * src/trace.c: add /var/log to the paths ignored
+    (LP: #559525)
+
+ -- Bryan Fullerton <fehwalker@gmail.com>  Tue, 12 Mar 2013 15:06:41 +0000
+
 ureadahead (0.100.0-14) raring; urgency=low
 
   * Use dh-autoreconf to ensure (among other things) that config.guess and

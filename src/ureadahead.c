@@ -132,7 +132,7 @@ static NihOption options[] = {
 	  NULL, "SECONDS", &timeout, nih_option_int },
 	{ 0, "dump", N_("dump the current pack file"),
 	  NULL, NULL, &dump_pack, NULL },
-	{ 0, "sort", N_("how to sort the pack file when dumping [default: path]"),
+	{ 0, "sort", N_("how to sort the pack file when dumping [default: open]"),
 	  NULL, "SORT", &sort_pack, sort_option },
 
 	NIH_OPTION_LAST

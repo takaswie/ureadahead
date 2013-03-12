@@ -610,6 +610,8 @@ ignore_path (const char *pathname)
 		return TRUE;
 	if (! strncmp (pathname, "/var/run/", 9))
 		return TRUE;
+	if (! strncmp (pathname, "/var/log/", 9))
+		return TRUE;
 	if (! strncmp (pathname, "/var/lock/", 10))
 		return TRUE;
 
