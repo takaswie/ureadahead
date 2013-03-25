@@ -490,12 +490,11 @@ trace_add_path (const void *parent,
 		nih_hash_add (path_hash, &entry->entry);
 	}
 
-	/* Make sure that we have an ordinary file, or a symlink to an
-	 * ordinary file.  This avoids us opening a fifo or socket.
+	/* Make sure that we have an ordinary file
+	 * This avoids us opening a fifo or socket or symlink.
 	 */
 	if ((lstat (pathname, &statbuf) < 0)
-	    || (S_ISLNK (statbuf.st_mode)
-		&& (stat (pathname, &statbuf) < 0))
+	    || (S_ISLNK (statbuf.st_mode))
 	    || (! S_ISREG (statbuf.st_mode)))
 		return 0;
 
