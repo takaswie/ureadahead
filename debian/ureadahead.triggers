@@ -1,2 +1,2 @@
-interest /etc/init
-interest /etc/init.d
+interest-noawait /etc/init
+interest-noawait /etc/init.d

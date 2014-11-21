@@ -1,3 +1,10 @@
+ureadahead (0.100.0-17) vivid; urgency=medium
+
+  * Switch trigger directives to interest-noawait, to avoid trigger cycles
+    which can cause dpkg to bail out. (LP: #1394893)
+
+ -- Iain Lane <iain.lane@canonical.com>  Fri, 21 Nov 2014 12:13:21 +0000
+
 ureadahead (0.100.0-16) raring; urgency=low
 
   * src/trace.c: update to ignore symlinks when tracing + cleanup extra stat()
