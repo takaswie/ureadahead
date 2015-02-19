@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 %:
-	dh $@ --with autoreconf
+	dh $@ --with autoreconf,systemd
 
 
 CFLAGS = -Wall -g -fstack-protector -fPIE
@@ -24,5 +24,8 @@ override_dh_install:
 	dh_install
 	install -m 644 debian/ureadahead.apport \
 		debian/ureadahead/usr/share/apport/package-hooks/ureadahead.py
+	install -d debian/ureadahead/lib/systemd/system/
+	install -m 644 debian/ureadahead-stop.service debian/ureadahead-stop.timer \
+		debian/ureadahead/lib/systemd/system/
 
 version := $(shell sed -e '1{;s|^ureadahead (\(.*\))\ .*|\1|;q;}' debian/changelog)

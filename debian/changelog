@@ -1,3 +1,12 @@
+ureadahead (0.100.0-18) vivid; urgency=medium
+
+  * Add systemd units (for the root file system only, for now).
+  * Drop now unnecessary upstart dependency.
+  * Add conflict to systemd (<< 217), as versions up to that shipped its own
+    readahead implementation.
+
+ -- Martin Pitt <martin.pitt@ubuntu.com>  Thu, 19 Feb 2015 20:48:51 +0100
+
 ureadahead (0.100.0-17) vivid; urgency=medium
 
   * Switch trigger directives to interest-noawait, to avoid trigger cycles
