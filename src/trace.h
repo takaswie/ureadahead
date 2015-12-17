@@ -19,6 +19,7 @@
 #ifndef UREADAHEAD_TRACE_H
 #define UREADAHEAD_TRACE_H
 
+#include <limits.h>
 #include <sys/types.h>
 
 #include <nih/macros.h>
@@ -27,7 +28,14 @@
 
 NIH_BEGIN_EXTERN
 
-int trace (int daemonise, int timeout);
+typedef struct path_prefix_option {
+        dev_t st_dev;
+        char prefix[PATH_MAX];
+} PathPrefixOption;
+
+int trace (int daemonise, int timeout,
+           const char *filename_to_replace,
+           const PathPrefixOption *path_prefix);
 
 NIH_END_EXTERN
 

@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -88,6 +89,7 @@
 /* Prototypes for static functions */
 static int       read_trace        (const void *parent,
 				    int dfd, const char *path,
+				    const PathPrefixOption *path_prefix,
 				    PackFile **files, size_t *num_files);
 static void      fix_path          (char *pathname);
 static int       trace_add_path    (const void *parent, const char *pathname,
@@ -114,7 +116,9 @@ sig_interrupt (int signum)
 
 int
 trace (int daemonise,
-       int timeout)
+       int timeout,
+       const char *filename_to_replace,
+       const PathPrefixOption *path_prefix)
 {
 	int                 dfd;
 	FILE                *fp;
@@ -248,7 +252,7 @@ trace (int daemonise,
 		;
 
 	/* Read trace log */
-	if (read_trace (NULL, dfd, "trace", &files, &num_files) < 0)
+	if (read_trace (NULL, dfd, "trace", path_prefix, &files, &num_files) < 0)
 		goto error;
 
 	/*
@@ -281,6 +285,15 @@ trace (int daemonise,
 			nih_warn ("%s", err->message);
 			nih_free (err);
 
+			continue;
+		}
+
+		/* If filename_to_replace is not NULL, only write out the
+		 * file and skip others.
+		 */
+		if (filename_to_replace &&
+		    strcmp (filename_to_replace, filename)) {
+			nih_info ("Skipping %s", filename);
 			continue;
 		}
 
@@ -320,6 +333,7 @@ static int
 read_trace (const void *parent,
 	    int         dfd,
 	    const char *path,
+	    const PathPrefixOption *path_prefix,
 	    PackFile ** files,
 	    size_t *    num_files)
 {
@@ -328,6 +342,7 @@ read_trace (const void *parent,
 	char *line;
 
 	nih_assert (path != NULL);
+	nih_assert (path_prefix != NULL);
 	nih_assert (files != NULL);
 	nih_assert (num_files != NULL);
 
@@ -373,9 +388,22 @@ read_trace (const void *parent,
 		*end = '\0';
 
 		fix_path (ptr);
+		if (path_prefix->st_dev != NODEV && ptr[0] == '/') {
+			struct stat stbuf;
+			char *rewritten = nih_sprintf (
+			    line, "%s%s", path_prefix->prefix, ptr);
+			if (! lstat (rewritten, &stbuf) &&
+			    stbuf.st_dev == path_prefix->st_dev) {
+				/* If |rewritten| exists on the same device as
+				 * path_prefix->st_dev, record the rewritten one
+				 * instead of the original path.
+				 */
+				ptr = rewritten;
+			}
+		}
 		trace_add_path (parent, ptr, files, num_files);
 
-		nih_free (line);
+		nih_free (line);  /* also frees |rewritten| */
 	}
 
 	if (fclose (fp) < 0)

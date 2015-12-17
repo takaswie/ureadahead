@@ -30,6 +30,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/param.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,6 +87,47 @@ static int dump_pack = FALSE;
  **/
 static SortOption sort_pack = SORT_OPEN;
 
+/**
+ * path_prefix:
+ *
+ * path_prefix.st_dev is set to >=0 if we should prepend path_prefix.prefix
+ * to all path names on the device.
+ **/
+static PathPrefixOption path_prefix = { NODEV };
+
+static int
+path_prefix_option (NihOption  *option,
+                    const char *arg)
+{
+	PathPrefixOption *value;
+	struct stat st;
+	dev_t st_dev;
+
+	nih_assert (option != NULL);
+	nih_assert (option->value != NULL);
+	nih_assert (arg != NULL);
+
+	value = (PathPrefixOption *)option->value;
+
+	if (strlen (arg) >= PATH_MAX) {
+		goto error;
+	}
+
+	if (lstat (arg, &st) < 0 || !S_ISDIR (st.st_mode)) {
+		goto error;
+	}
+
+	value->st_dev = st.st_dev;
+	strcpy (value->prefix, arg);
+
+	return 0;
+
+error:
+	fprintf (stderr, _("%s: illegal argument: %s\n"),
+		 program_name, arg);
+	nih_main_suggest_help ();
+	return -1;
+}
 
 static int
 sort_option (NihOption  *option,
@@ -134,6 +176,8 @@ static NihOption options[] = {
 	  NULL, NULL, &dump_pack, NULL },
 	{ 0, "sort", N_("how to sort the pack file when dumping [default: open]"),
 	  NULL, "SORT", &sort_pack, sort_option },
+	{ 0, "path-prefix", N_("pathname to prepend for files on the device"),
+	  NULL, "PREFIX", &path_prefix, path_prefix_option },
 
 	NIH_OPTION_LAST
 };
@@ -165,13 +209,14 @@ main (int   argc,
 	if (! args)
 		exit (1);
 
+	/* Lookup the filename for the pack based on the path given
+	 * (if any).
+	 */
+	filename = pack_file_name (NULL, args[0]);
+
 	if (! force_trace) {
 		NihError *err;
 
-		/* Lookup the filename for the pack based on the path given
-		 * (if any).
-		 */
-		filename = pack_file_name (NULL, args[0]);
 		if (! filename) {
 			NihError *err;
 
@@ -220,7 +265,7 @@ main (int   argc,
 	}
 
 	/* Trace to generate new pack files */
-	if (trace (daemonise, timeout) < 0) {
+	if (trace (daemonise, timeout, filename, &path_prefix) < 0) {
 		NihError *err;
 
 		err = nih_error_get ();
