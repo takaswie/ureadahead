@@ -1,3 +1,9 @@
+ureadahead (0.100.0-20) artful; urgency=medium
+
+  * Do not install upstart system jobs.
+
+ -- Dimitri John Ledkov <xnox@ubuntu.com>  Tue, 15 Aug 2017 03:54:27 +0100
+
 ureadahead (0.100.0-19) vivid; urgency=medium
 
   * Don't start init scripts on package install/upgrade. (LP: #777224)

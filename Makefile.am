@@ -6,13 +6,6 @@ EXTRA_DIST = config.rpath
 
 ACLOCAL_AMFLAGS = --install -I m4
 
-
-initdir = $(sysconfdir)/init
-dist_init_DATA = \
-	conf/ureadahead.conf \
-	conf/ureadahead-other.conf
-
-
 dist_man_MANS = \
 	man/ureadahead.8
 
