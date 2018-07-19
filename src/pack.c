@@ -23,7 +23,7 @@
 # include <config.h>
 #endif /* HAVE_CONFIG_H */
 
-
+#include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>

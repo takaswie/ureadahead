@@ -28,6 +28,7 @@
 
 #include <sys/select.h>
 #include <sys/mount.h>
+#include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
