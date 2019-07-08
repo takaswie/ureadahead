@@ -383,7 +383,7 @@ write_pack (const char *filename,
 	/* Open the file, making sure we truncate it and give it a
 	 * sane mode
 	 */
-	fd = open (filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	fd = open (filename, O_WRONLY | O_CREAT | O_TRUNC | O_NOFOLLOW, 0600);
 	if (fd < 0)
 		nih_return_system_error (-1);
 
@@ -662,14 +662,16 @@ do_readahead (PackFile *file,
 	if (get_value (AT_FDCWD, "/proc/sys/fs/nr_open", &nr_open) < 0)
 		return -1;
 
-	if ((size_t)(nr_open - 10) < file->num_paths) {
-		file->num_paths = nr_open - 10;
+	int limit_increase = (nr_open < 10)? nr_open : 10;
+
+	if ((size_t)(nr_open - limit_increase) < file->num_paths) {
+		file->num_paths = nr_open - limit_increase;
 		nih_info ("Truncating to first %zu paths", file->num_paths);
 	}
 
 	/* Adjust our resource limits */
-	nofile.rlim_cur = 10 + file->num_paths;
-	nofile.rlim_max = 10 + file->num_paths;
+	nofile.rlim_cur = limit_increase + file->num_paths;
+	nofile.rlim_max = limit_increase + file->num_paths;
 
 	if (setrlimit (RLIMIT_NOFILE, &nofile) < 0)
 		nih_return_system_error (-1);

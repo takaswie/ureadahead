@@ -138,7 +138,7 @@ trace (int daemonise,
 	size_t              num_cpus = 0;
 
 	/* Mount debugfs if not already mounted */
-	dfd = open (PATH_DEBUGFS "/tracing", O_RDONLY | O_NOATIME);
+	dfd = open (PATH_DEBUGFS "/tracing", O_NOFOLLOW | O_RDONLY | O_NOATIME);
 	if (dfd < 0) {
 		if (errno != ENOENT)
 			nih_return_system_error (-1);
@@ -146,7 +146,7 @@ trace (int daemonise,
 		if (mount ("none", PATH_DEBUGFS_TMP, "debugfs", 0, NULL) < 0)
 			nih_return_system_error (-1);
 
-		dfd = open (PATH_DEBUGFS_TMP "/tracing", O_RDONLY | O_NOATIME);
+		dfd = open (PATH_DEBUGFS_TMP "/tracing", O_NOFOLLOW | O_RDONLY | O_NOATIME);
 		if (dfd < 0) {
 			nih_error_raise_system ();
 			umount (PATH_DEBUGFS_TMP);
