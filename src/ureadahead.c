@@ -95,6 +95,21 @@ static SortOption sort_pack = SORT_OPEN;
  **/
 static PathPrefixOption path_prefix = { NODEV };
 
+/**
+ * pack_file:
+ *
+ * Path to the pack file to use.
+ */
+static char *pack_file = NULL;
+
+/**
+ * path_prefix_filter:
+ *
+ * Path prefix that files read during tracing have to start with to be included
+ * in the pack file.
+ */
+static char *path_prefix_filter = NULL;
+
 static int
 path_prefix_option (NihOption  *option,
                     const char *arg)
@@ -127,6 +142,19 @@ error:
 		 program_name, arg);
 	nih_main_suggest_help ();
 	return -1;
+}
+
+static int
+dup_string_handler (NihOption   *option,
+		    const char  *arg)
+{
+	nih_assert (option != NULL);
+	nih_assert (option->value != NULL);
+	nih_assert (arg != NULL);
+
+	char **value = (char **)option->value;
+	*value = NIH_MUST (nih_strdup (NULL, arg));
+	return 0;
 }
 
 static int
@@ -178,6 +206,11 @@ static NihOption options[] = {
 	  NULL, "SORT", &sort_pack, sort_option },
 	{ 0, "path-prefix", N_("pathname to prepend for files on the device"),
 	  NULL, "PREFIX", &path_prefix, path_prefix_option },
+	{ 0, "path-prefix-filter",
+	  N_("Path prefix that retained files during tracing must start with"),
+	  NULL, "PREFIX_FILTER", &path_prefix_filter, dup_string_handler },
+	{ 0, "pack-file", N_("Path of the pack file to use"),
+	  NULL, "PACK_FILE", &pack_file, dup_string_handler },
 
 	NIH_OPTION_LAST
 };
@@ -212,7 +245,9 @@ main (int   argc,
 	/* Lookup the filename for the pack based on the path given
 	 * (if any).
 	 */
-	filename = pack_file_name (NULL, args[0]);
+	filename = pack_file
+		? NIH_MUST (nih_strdup (NULL, pack_file))
+		: pack_file_name (NULL, args[0]);
 
 	if (! force_trace) {
 		NihError *err;
@@ -265,7 +300,8 @@ main (int   argc,
 	}
 
 	/* Trace to generate new pack files */
-	if (trace (daemonise, timeout, filename, &path_prefix) < 0) {
+	if (trace (daemonise, timeout, filename, pack_file,
+		   path_prefix_filter, &path_prefix) < 0) {
 		NihError *err;
 
 		err = nih_error_get ();

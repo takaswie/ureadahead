@@ -35,6 +35,8 @@ typedef struct path_prefix_option {
 
 int trace (int daemonise, int timeout,
            const char *filename_to_replace,
+           const char *pack_file,  /* May be null */
+           const char *path_prefix_filter,  /* May be null */
            const PathPrefixOption *path_prefix);
 
 NIH_END_EXTERN

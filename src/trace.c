@@ -90,6 +90,7 @@
 /* Prototypes for static functions */
 static int       read_trace        (const void *parent,
 				    int dfd, const char *path,
+				    const char *path_prefix_filter,
 				    const PathPrefixOption *path_prefix,
 				    PackFile **files, size_t *num_files);
 static void      fix_path          (char *pathname);
@@ -119,6 +120,8 @@ int
 trace (int daemonise,
        int timeout,
        const char *filename_to_replace,
+       const char *pack_file,
+       const char *path_prefix_filter,
        const PathPrefixOption *path_prefix)
 {
 	int                 dfd;
@@ -253,7 +256,8 @@ trace (int daemonise,
 		;
 
 	/* Read trace log */
-	if (read_trace (NULL, dfd, "trace", path_prefix, &files, &num_files) < 0)
+	if (read_trace (NULL, dfd, "trace", path_prefix_filter, path_prefix,
+			&files, &num_files) < 0)
 		goto error;
 
 	/*
@@ -277,27 +281,30 @@ trace (int daemonise,
 	/* Write out pack files */
 	for (size_t i = 0; i < num_files; i++) {
 		nih_local char *filename = NULL;
+		if (pack_file) {
+			filename = NIH_MUST (nih_strdup (NULL, pack_file));
+		} else {
+			filename = pack_file_name_for_device (NULL,
+							      files[i].dev);
+			if (! filename) {
+				NihError *err;
 
-		filename = pack_file_name_for_device (NULL, files[i].dev);
-		if (! filename) {
-			NihError *err;
+				err = nih_error_get ();
+				nih_warn ("%s", err->message);
+				nih_free (err);
 
-			err = nih_error_get ();
-			nih_warn ("%s", err->message);
-			nih_free (err);
+				continue;
+			}
 
-			continue;
+			/* If filename_to_replace is not NULL, only write out
+			 * the file and skip others.
+			 */
+			if (filename_to_replace &&
+			    strcmp (filename_to_replace, filename)) {
+				nih_info ("Skipping %s", filename);
+				continue;
+			}
 		}
-
-		/* If filename_to_replace is not NULL, only write out the
-		 * file and skip others.
-		 */
-		if (filename_to_replace &&
-		    strcmp (filename_to_replace, filename)) {
-			nih_info ("Skipping %s", filename);
-			continue;
-		}
-
 		nih_info ("Writing %s", filename);
 
 		/* We only need to apply additional sorting to the
@@ -334,6 +341,7 @@ static int
 read_trace (const void *parent,
 	    int         dfd,
 	    const char *path,
+	    const char *path_prefix_filter,  /* May be null */
 	    const PathPrefixOption *path_prefix,
 	    PackFile ** files,
 	    size_t *    num_files)
@@ -389,6 +397,14 @@ read_trace (const void *parent,
 		*end = '\0';
 
 		fix_path (ptr);
+
+		if (path_prefix_filter &&
+		    strncmp (ptr, path_prefix_filter,
+			     strlen (path_prefix_filter))) {
+			nih_warn ("Skipping %s due to path prefix filter", ptr);
+			continue;
+		}
+
 		if (path_prefix->st_dev != NODEV && ptr[0] == '/') {
 			struct stat stbuf;
 			char *rewritten = nih_sprintf (
