@@ -92,13 +92,13 @@ static int       read_trace        (const void *parent,
 				    int dfd, const char *path,
 				    const char *path_prefix_filter,
 				    const PathPrefixOption *path_prefix,
-				    PackFile **files, size_t *num_files);
+				    PackFile **files, size_t *num_files, int force_ssd_mode);
 static void      fix_path          (char *pathname);
 static int       trace_add_path    (const void *parent, const char *pathname,
-				    PackFile **files, size_t *num_files);
+				    PackFile **files, size_t *num_files, int force_ssd_mode);
 static int       ignore_path       (const char *pathname);
 static PackFile *trace_file        (const void *parent, dev_t dev,
-				    PackFile **files, size_t *num_files);
+				    PackFile **files, size_t *num_files, int force_ssd_mode);
 static int       trace_add_chunks  (const void *parent,
 				    PackFile *file, PackPath *path,
 				    int fd, off_t size);
@@ -122,7 +122,8 @@ trace (int daemonise,
        const char *filename_to_replace,
        const char *pack_file,
        const char *path_prefix_filter,
-       const PathPrefixOption *path_prefix)
+       const PathPrefixOption *path_prefix,
+       int force_ssd_mode)
 {
 	int                 dfd;
 	FILE                *fp;
@@ -257,7 +258,7 @@ trace (int daemonise,
 
 	/* Read trace log */
 	if (read_trace (NULL, dfd, "trace", path_prefix_filter, path_prefix,
-			&files, &num_files) < 0)
+			&files, &num_files, force_ssd_mode) < 0)
 		goto error;
 
 	/*
@@ -344,7 +345,8 @@ read_trace (const void *parent,
 	    const char *path_prefix_filter,  /* May be null */
 	    const PathPrefixOption *path_prefix,
 	    PackFile ** files,
-	    size_t *    num_files)
+	    size_t *    num_files,
+	    int         force_ssd_mode)
 {
 	int   fd;
 	FILE *fp;
@@ -418,7 +420,7 @@ read_trace (const void *parent,
 				ptr = rewritten;
 			}
 		}
-		trace_add_path (parent, ptr, files, num_files);
+		trace_add_path (parent, ptr, files, num_files, force_ssd_mode);
 
 		nih_free (line);  /* also frees |rewritten| */
 	}
@@ -481,7 +483,8 @@ static int
 trace_add_path (const void *parent,
 		const char *pathname,
 		PackFile ** files,
-		size_t *    num_files)
+		size_t *    num_files,
+		int         force_ssd_mode)
 {
 	static NihHash *path_hash = NULL;
 	struct stat     statbuf;
@@ -575,7 +578,7 @@ trace_add_path (const void *parent,
 	 * Lookup file based on the dev_t, potentially creating a new
 	 * pack file in the array.
 	 */
-	file = trace_file (parent, statbuf.st_dev, files, num_files);
+	file = trace_file (parent, statbuf.st_dev, files, num_files, force_ssd_mode);
 
 	/* Grow the PackPath array and fill in the details for the new
 	 * path.
@@ -667,7 +670,8 @@ static PackFile *
 trace_file (const void *parent,
 	    dev_t       dev,
 	    PackFile ** files,
-	    size_t *    num_files)
+	    size_t *    num_files,
+	    int         force_ssd_mode)
 {
 	nih_local char *filename = NULL;
 	int             rotational;
@@ -681,30 +685,34 @@ trace_file (const void *parent,
 		if ((*files)[i].dev == dev)
 			return &(*files)[i];
 
-	/* Query sysfs to see whether this disk is rotational; this
-	 * obviously won't work for virtual devices and the like, so
-	 * default to TRUE for now.
-	 */
-	filename = NIH_MUST (nih_sprintf (NULL, "/sys/dev/block/%d:%d/queue/rotational",
-					  major (dev), minor (dev)));
-	if (access (filename, R_OK) < 0) {
-		/* For devices managed by the scsi stack, the minor device number has to be
-		 * masked to find the queue/rotational file.
+	if (force_ssd_mode) {
+		rotational = FALSE;
+	} else {
+		/* Query sysfs to see whether this disk is rotational; this
+		 * obviously won't work for virtual devices and the like, so
+		 * default to TRUE for now.
 		 */
-		nih_free (filename);
 		filename = NIH_MUST (nih_sprintf (NULL, "/sys/dev/block/%d:%d/queue/rotational",
-						  major (dev), minor (dev) & 0xffff0));
-	}
+						major (dev), minor (dev)));
+		if (access (filename, R_OK) < 0) {
+			/* For devices managed by the scsi stack, the minor device number has to be
+			 * masked to find the queue/rotational file.
+			 */
+			nih_free (filename);
+			filename = NIH_MUST (nih_sprintf (NULL, "/sys/dev/block/%d:%d/queue/rotational",
+							major (dev), minor (dev) & 0xffff0));
+		}
 
-	if (get_value (AT_FDCWD, filename, &rotational) < 0) {
-		NihError *err;
+		if (get_value (AT_FDCWD, filename, &rotational) < 0) {
+			NihError *err;
 
-		err = nih_error_get ();
-		nih_warn (_("Unable to obtain rotationalness for device %u:%u: %s"),
-			  major (dev), minor (dev), err->message);
-		nih_free (err);
+			err = nih_error_get ();
+			nih_warn (_("Unable to obtain rotationalness for device %u:%u: %s"),
+				major (dev), minor (dev), err->message);
+			nih_free (err);
 
-		rotational = TRUE;
+			rotational = TRUE;
+		}
 	}
 
 	/* Grow the PackFile array and fill in the details for the new

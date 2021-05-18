@@ -110,6 +110,14 @@ static char *pack_file = NULL;
  */
 static char *path_prefix_filter = NULL;
 
+/**
+ * force_ssd_mode:
+ *
+ * Querying sysfs to detect whether disk is rotational does not work for virtual
+ * devices in vm, this will write pack header with rotational field set to 0.
+ */
+static int force_ssd_mode = FALSE;
+
 static int
 path_prefix_option (NihOption  *option,
                     const char *arg)
@@ -211,6 +219,8 @@ static NihOption options[] = {
 	  NULL, "PREFIX_FILTER", &path_prefix_filter, dup_string_handler },
 	{ 0, "pack-file", N_("Path of the pack file to use"),
 	  NULL, "PACK_FILE", &pack_file, dup_string_handler },
+	{ 0, "force-ssd-mode", N_("force ssd setting in pack file during tracing"),
+	  NULL, NULL, &force_ssd_mode, NULL },
 
 	NIH_OPTION_LAST
 };
@@ -301,7 +311,7 @@ main (int   argc,
 
 	/* Trace to generate new pack files */
 	if (trace (daemonise, timeout, filename, pack_file,
-		   path_prefix_filter, &path_prefix) < 0) {
+		   path_prefix_filter, &path_prefix, force_ssd_mode) < 0) {
 		NihError *err;
 
 		err = nih_error_get ();
