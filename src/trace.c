@@ -80,6 +80,13 @@
 #define PATH_DEBUGFS_TMP "/var/lib/ureadahead/debugfs"
 
 /**
+ * PATH_TRACEFS:
+ *
+ * Path to the usual tracefs (since kernel 4.1) mountpoint.
+ **/
+#define PATH_TRACEFS     "/sys/kernel/tracing"
+
+/**
  * INODE_GROUP_PRELOAD_THRESHOLD:
  *
  * Number of inodes in a group before we preload that inode's blocks.
@@ -141,8 +148,14 @@ trace (int daemonise,
 	size_t              num_files = 0;
 	size_t              num_cpus = 0;
 
-	/* Mount debugfs if not already mounted */
-	dfd = open (PATH_DEBUGFS "/tracing", O_NOFOLLOW | O_RDONLY | O_NOATIME);
+	dfd = open (PATH_TRACEFS, O_NOFOLLOW | O_RDONLY | O_NOATIME);
+	if (dfd < 0) {
+		if (errno != ENOENT)
+			nih_return_system_error (-1);
+
+		dfd = open (PATH_DEBUGFS "/tracing", O_NOFOLLOW | O_RDONLY | O_NOATIME);
+	}
+	/* Mount debugfs (and implicitly tracefs) if not already mounted */
 	if (dfd < 0) {
 		if (errno != ENOENT)
 			nih_return_system_error (-1);
