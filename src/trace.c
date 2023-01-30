@@ -130,6 +130,7 @@ trace (int daemonise,
        const char *pack_file,
        const char *path_prefix_filter,
        const PathPrefixOption *path_prefix,
+       int use_existing_trace,
        int force_ssd_mode)
 {
 	int                 dfd;
@@ -195,22 +196,24 @@ trace (int daemonise,
 	if (!num_cpus)
 		num_cpus = 1;
 
-	/* Enable tracing of open() syscalls */
-	if (set_value (dfd, "events/fs/do_sys_open/enable",
-		       TRUE, &old_sys_open_enabled) < 0)
-		goto error;
- 	if (set_value (dfd, "events/fs/open_exec/enable",
-		       TRUE, &old_open_exec_enabled) < 0)
-		goto error;
- 	if (set_value (dfd, "events/fs/uselib/enable",
-		       TRUE, &old_uselib_enabled) < 0) {
-		NihError *err;
+	if (! use_existing_trace) {
+		/* Enable tracing of open() syscalls */
+		if (set_value (dfd, "events/fs/do_sys_open/enable",
+			       TRUE, &old_sys_open_enabled) < 0)
+			goto error;
+ 		if (set_value (dfd, "events/fs/open_exec/enable",
+			       TRUE, &old_open_exec_enabled) < 0)
+			goto error;
+ 		if (set_value (dfd, "events/fs/uselib/enable",
+			       TRUE, &old_uselib_enabled) < 0) {
+			NihError *err;
 
-		err = nih_error_get ();
-		nih_debug ("Missing uselib tracing: %s", err->message);
-		nih_free (err);
+			err = nih_error_get ();
+			nih_debug ("Missing uselib tracing: %s", err->message);
+			nih_free (err);
 
-		old_uselib_enabled = -1;
+			old_uselib_enabled = -1;
+		}
 	}
 	if (set_value (dfd, "buffer_size_kb", 8192/num_cpus, &old_buffer_size_kb) < 0)
 		goto error;
@@ -254,16 +257,18 @@ trace (int daemonise,
 	if (set_value (dfd, "tracing_on",
 		       old_tracing_enabled, NULL) < 0)
 		goto error;
-	if (old_uselib_enabled >= 0)
-		if (set_value (dfd, "events/fs/uselib/enable",
-			       old_uselib_enabled, NULL) < 0)
+	if (! use_existing_trace) {
+		if (old_uselib_enabled >= 0)
+			if (set_value (dfd, "events/fs/uselib/enable",
+				       old_uselib_enabled, NULL) < 0)
+				goto error;
+		if (set_value (dfd, "events/fs/open_exec/enable",
+			       old_open_exec_enabled, NULL) < 0)
 			goto error;
-	if (set_value (dfd, "events/fs/open_exec/enable",
-		       old_open_exec_enabled, NULL) < 0)
-		goto error;
-	if (set_value (dfd, "events/fs/do_sys_open/enable",
-		       old_sys_open_enabled, NULL) < 0)
-		goto error;
+		if (set_value (dfd, "events/fs/do_sys_open/enable",
+			       old_sys_open_enabled, NULL) < 0)
+			goto error;
+	}
 
 	/* Be nicer */
 	if (nice (15))
